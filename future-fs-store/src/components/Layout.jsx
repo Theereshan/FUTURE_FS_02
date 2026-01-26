@@ -1,13 +1,14 @@
-import { Link } from "react-router-dom";
+import { Link, Outlet } from "react-router-dom";
+import { useCart } from "../context/CartContext";
 
-export default function Layout({ children }) {
+export default function Layout() {
+  const { cart } = useCart();
+  const itemCount = cart.reduce((sum, item) => sum + item.qty, 0);
+
   return (
     <div className="min-h-screen bg-gray-100">
-      {/* Header */}
       <header className="sticky top-0 z-40 backdrop-blur bg-white/80 shadow-sm">
         <div className="max-w-6xl mx-auto px-6 py-4 flex justify-between items-center">
-          
-          {/* Logo */}
           <Link
             to="/"
             className="text-3xl font-extrabold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent"
@@ -15,27 +16,28 @@ export default function Layout({ children }) {
             Future FS Store
           </Link>
 
-          {/* Nav */}
           <nav className="flex gap-6 text-lg font-medium">
-            <Link
-              to="/"
-              className="text-gray-600 hover:text-blue-600 transition"
-            >
+            <Link to="/" className="text-gray-600 hover:text-blue-600 transition">
               Home
             </Link>
+
             <Link
               to="/cart"
-              className="text-gray-600 hover:text-blue-600 transition"
+              className="relative text-gray-600 hover:text-blue-600 transition"
             >
               Cart
+              {itemCount > 0 && (
+                <span className="absolute -top-2 -right-3 bg-red-500 text-white text-xs font-bold px-2 py-0.5 rounded-full">
+                  {itemCount}
+                </span>
+              )}
             </Link>
           </nav>
         </div>
       </header>
 
-      {/* Page content */}
       <main className="max-w-6xl mx-auto p-6">
-        {children}
+        <Outlet />
       </main>
     </div>
   );
